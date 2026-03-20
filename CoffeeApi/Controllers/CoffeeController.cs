@@ -16,10 +16,9 @@ namespace CoffeeApi.Controllers
         }
 
         [HttpGet("/brew-coffee")]
-        public IActionResult BrewCoffee()
+        public async Task<IActionResult> BrewCoffee()
         {
-            var now = DateTimeOffset.Now;
-            var result = _coffeeService.BrewCoffee(now);
+            var result = await _coffeeService.BrewCoffee();
 
             if (result.StatusCode != 200)
             {

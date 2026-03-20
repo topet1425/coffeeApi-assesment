@@ -3,7 +3,9 @@ using CoffeeApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<ICoffeeService, CoffeeService>();
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddScoped<ICoffeeService, CoffeeService>();
+builder.Services.AddHttpClient<IWeatherService, WeatherService>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

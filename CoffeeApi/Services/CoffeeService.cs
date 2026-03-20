@@ -8,11 +8,22 @@ namespace CoffeeApi.Services
         private static int _counter = 0;
         private static readonly object _lock = new();
 
-        public (int StatusCode, CoffeeResponse? Response) BrewCoffee(DateTimeOffset dateTimeOffset)
+        private readonly IWeatherService _weatherService;
+        private readonly IDateTimeProvider _dateTimeProvider;
+
+        public CoffeeService(IDateTimeProvider dateTimeProvider, IWeatherService weatherService)
         {
+            _weatherService = weatherService;
+            _dateTimeProvider = dateTimeProvider;
+        }
+
+
+        public async Task<(int StatusCode, CoffeeResponse? Response)> BrewCoffee()
+        {
+            var now = _dateTimeProvider.Now;
 
             // Requirement #3 (April 1st)
-            if (dateTimeOffset.Month == 4 && dateTimeOffset.Day == 1)
+            if (now.Month == 4 && now.Day == 1)
             {
                 return (418, null);
             }
@@ -30,10 +41,16 @@ namespace CoffeeApi.Services
                 return (503, null);
             }
 
+            var temp = await _weatherService.GetTemperatureAsync();
+
+            var message = temp > 30
+                ? "Your refreshing iced coffee is ready"
+                : "Your piping hot coffee is ready";
+
             var response = new CoffeeResponse
             {
-                Message = "Your piping hot coffee is ready",
-                Prepared = dateTimeOffset.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture)
+                Message = message,
+                Prepared = now.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture)
             };
 
             return (200, response);

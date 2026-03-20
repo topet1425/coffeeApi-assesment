@@ -4,6 +4,6 @@ namespace CoffeeApi.Services
 {
     public interface ICoffeeService
     {
-        (int StatusCode, CoffeeResponse? Response) BrewCoffee(DateTimeOffset dateTimeOffset);
+        Task<(int StatusCode, CoffeeResponse? Response)> BrewCoffee();
     }
 }
